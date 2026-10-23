@@ -43,3 +43,10 @@ RFC 9110 permits weak comparison for `If-None-Match`, which would let `W/"v1"` i
 - Commas inside quoted tags (`"a,b"`) are preserved; the list splitter is quote-aware.
 - Invalid items in a comma-separated list are silently skipped rather than raising, because real-world headers are messy and a single malformed entry should not prevent a valid one from matching.
 - An empty or missing `If-None-Match` never matches — the precondition is simply absent.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
